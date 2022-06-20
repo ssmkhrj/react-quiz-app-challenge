@@ -108,7 +108,7 @@ function Quiz({ lsKey, setStats }) {
   );
 
   useEffect(() => {
-    if (questions.length && questions.length < noOfQuestions) {
+    if (questions.length && answers.length < noOfQuestions) {
       startCountdown();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
