@@ -6,6 +6,8 @@ Hosted Link: https://react-quiz-app-challenge.netlify.app/
 
 ## Running Locally
 
+Github Link: https://github.com/ssmkhrj/react-quiz-app-challenge.git
+
 1. Clone the repository:
 
    `git clone https://github.com/ssmkhrj/react-quiz-app-challenge.git`
@@ -16,6 +18,6 @@ Hosted Link: https://react-quiz-app-challenge.netlify.app/
 
 3. And then run:
 
-   `npm start`.
+   `npm start`
 
    Open http://localhost:3000 to view it in the browser.
