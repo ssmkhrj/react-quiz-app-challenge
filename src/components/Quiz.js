@@ -42,10 +42,16 @@ function Quiz({ lsKey, setStats }) {
   const [answerInput, setAnswerInput] = useState("");
 
   const preferences = usePreferences()[0];
-  const preferencesRef = useRef(preferences);
+  const preferencesRef = useRef(
+    JSON.parse(window.localStorage.getItem(`${lsKey}/preferences`) || null)
+  );
   // Update preferences if quiz is not active
   if (!questions.length) {
     preferencesRef.current = preferences;
+    window.localStorage.setItem(
+      `${lsKey}/preferences`,
+      JSON.stringify(preferencesRef.current)
+    );
   }
   const { noOfQuestions, rangeOfOperands, operators } = preferencesRef.current;
 
@@ -102,32 +108,38 @@ function Quiz({ lsKey, setStats }) {
   );
 
   useEffect(() => {
-    // stop countdown on reset
-    // if (!questions.length) {
-    //   stopCountdown();
-    // }
-    // restart countdown on new question
     if (questions.length && questions.length < noOfQuestions) {
-      // stopCountdown();
       startCountdown();
     }
-    // stop countdown on submit
-    // if (answers.length === noOfQuestions) {
-    //   stopCountdown();
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!questions.length) {
     return (
-      <section className="bg-white p-8 rounded-lg shadow-md">
+      <section className="bg-white p-8 rounded-lg shadow-md sticky top-4">
         <h2 className="text-xl font-[700] mb-4">Instructions:</h2>
         <ul className="text-lg space-y-2 mb-8">
           <li>
-            You will be presented with {noOfQuestions} mathematical questions
+            For each question you will get{" "}
+            <span className="font-[700]">{TIMER} seconds</span>
           </li>
-          <li>For each question you will get {TIMER} seconds</li>
-          <li>You cannot navigate back to previous questions</li>
+          <li>
+            You will be presented with{" "}
+            <span className="font-[700]">{noOfQuestions}</span> mathematical
+            questions
+          </li>
+          <li>
+            Questions will contain the following operators:{" "}
+            <span className="font-[700]">{operators.join(" ")}</span>
+          </li>
+          <li>
+            The range of the operands will be from
+            <span className="font-[700]">
+              {` ${rangeOfOperands.split("-")[0]} `}
+            </span>
+            to
+            <span className="font-[700]"> {rangeOfOperands.split("-")[1]}</span>
+          </li>
         </ul>
         <button
           onClick={handleNext}
@@ -140,7 +152,11 @@ function Quiz({ lsKey, setStats }) {
   }
 
   return (
-    <section className="bg-white p-8 rounded-lg shadow-md">
+    <section
+      className={`bg-white p-8 rounded-lg shadow-md ${
+        answers.length < noOfQuestions && "sticky top-4"
+      }`}
+    >
       <div className="mb-4 flex justify-between items-center">
         <button
           onClick={handleReset}
@@ -169,14 +185,21 @@ function Quiz({ lsKey, setStats }) {
         <div>
           <div className="flex gap-6 mb-8 items-center text-6xl font-[700]">
             <div className="shrink-0">{questions.at(-1).question} =</div>
-            <input
-              type="number"
-              placeholder="?"
-              autoFocus
-              value={answerInput}
-              onChange={({ target }) => setAnswerInput(target.value)}
-              className="bg-gray-100 text-center rounded-md px-4 py-2 focus:outline-none focus:ring-0 focus:bg-gray-200 border-0 text-6xl w-full placeholder:text-gray-400"
-            />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleNext();
+              }}
+            >
+              <input
+                type="number"
+                placeholder="?"
+                autoFocus
+                value={answerInput}
+                onChange={({ target }) => setAnswerInput(target.value)}
+                className="bg-gray-100 text-center rounded-md px-4 py-2 focus:outline-none focus:ring-0 focus:bg-gray-200 border-0 text-6xl w-full placeholder:text-gray-400"
+              />
+            </form>
           </div>
           <button
             onClick={handleNext}

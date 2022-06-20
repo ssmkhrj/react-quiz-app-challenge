@@ -15,7 +15,7 @@ function SettingsForm({ close }) {
     const rangeOfOperands = formData.get("range-of-operands");
     const operators = formData.getAll("operators");
 
-    if (!noOfQuestions) {
+    if (noOfQuestions <= 1) {
       setErrorInput({
         name: "no-of-questions",
         msg: "Please fill a number greater than or equal to 1",
